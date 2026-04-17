@@ -4,9 +4,9 @@ kind: CustomResourceDefinition
 metadata:
   annotations:
     controller-gen.kubebuilder.io/version: v0.19.0
-  name: clusterproviderconfigs.sos.m.crossplane.io
+  name: clusterproviderconfigs.sos.m.exoscale.ch
 spec:
-  group: sos.m.crossplane.io
+  group: sos.m.exoscale.ch
   names:
     categories:
     - crossplane

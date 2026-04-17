@@ -7,8 +7,7 @@ import (
 // ExternalNameConfigs contains all external name configurations for this
 // provider.
 var ExternalNameConfigs = map[string]config.ExternalName{
-	// Import requires using a randomly generated ID from provider: nl-2e21sda
-	"null_resource": idWithStub(),
+	"aws_s3_bucket": config.ParameterAsIdentifier("bucket"),
 }
 
 func idWithStub() config.ExternalName {

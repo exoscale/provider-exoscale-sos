@@ -6,8 +6,8 @@ import (
 
 	ujconfig "github.com/crossplane/upjet/v2/pkg/config"
 
-	nullCluster "github.com/exoscale/provider-exoscale-sos/config/cluster/null"
-	nullNamespaced "github.com/exoscale/provider-exoscale-sos/config/namespaced/null"
+	cluster "github.com/exoscale/provider-exoscale-sos/config/cluster"
+	namespaced "github.com/exoscale/provider-exoscale-sos/config/namespaced"
 )
 
 const (
@@ -33,7 +33,7 @@ func GetProvider() *ujconfig.Provider {
 
 	for _, configure := range []func(provider *ujconfig.Provider){
 		// add custom config functions
-		nullCluster.Configure,
+		cluster.Configure,
 	} {
 		configure(pc)
 	}
@@ -57,7 +57,7 @@ func GetProviderNamespaced() *ujconfig.Provider {
 
 	for _, configure := range []func(provider *ujconfig.Provider){
 		// add custom config functions
-		nullNamespaced.Configure,
+		namespaced.Configure,
 	} {
 		configure(pc)
 	}

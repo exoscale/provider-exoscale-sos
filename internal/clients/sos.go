@@ -3,6 +3,8 @@ package clients
 import (
 	"context"
 	"encoding/json"
+	"net/url"
+	"strings"
 
 	"github.com/crossplane/crossplane-runtime/v2/pkg/resource"
 	"github.com/pkg/errors"
@@ -23,6 +25,51 @@ const (
 	errExtractCredentials   = "cannot extract credentials"
 	errUnmarshalCredentials = "cannot unmarshal sos credentials as JSON"
 )
+
+type awsClientConf struct {
+	APIKey    string `json:"key"`
+	APISecret string `json:"secret"`
+	Endpoint  string `json:"endpoint"`
+}
+
+func (conf *awsClientConf) GetRegion() (string, error) {
+	endpoint, err := url.Parse(conf.Endpoint)
+	if err != nil {
+		return "", errors.New("invalid endpoint")
+	}
+
+	subDomain := strings.Split(endpoint.Host, ".")
+	if len(subDomain) < 2 {
+		return "", errors.New("invalid enpoint format")
+	}
+
+	return strings.ReplaceAll(subDomain[0], "sos-", ""), nil
+}
+
+func (conf *awsClientConf) Validate() error {
+	var errs []string
+	if conf.APIKey == "" {
+		errs = append(errs, "missing api key")
+	}
+
+	if conf.APISecret == "" {
+		errs = append(errs, "missing api secret")
+	}
+
+	if conf.Endpoint == "" {
+		errs = append(errs, "missing endpoint")
+	}
+
+	if _, err := url.Parse(conf.Endpoint); err != nil {
+		errs = append(errs, err.Error())
+	}
+
+	if len(errs) > 0 {
+		return errors.New(strings.Join(errs, ","))
+	}
+
+	return nil
+}
 
 // TerraformSetupBuilder builds Terraform a terraform.SetupFn function which
 // returns Terraform provider setup configuration
@@ -45,16 +92,35 @@ func TerraformSetupBuilder(version, providerSource, providerVersion string) terr
 		if err != nil {
 			return ps, errors.Wrap(err, errExtractCredentials)
 		}
-		creds := map[string]string{}
-		if err := json.Unmarshal(data, &creds); err != nil {
+		var conf awsClientConf
+		if err := json.Unmarshal(data, &conf); err != nil {
 			return ps, errors.Wrap(err, errUnmarshalCredentials)
 		}
+		if err := conf.Validate(); err != nil {
+			return ps, errors.Wrap(errors.New("invalid exoscale provider configuration"), err.Error())
+		}
 
-		// Set credentials in Terraform provider configuration.
-		/*ps.Configuration = map[string]any{
-			"username": creds["username"],
-			"password": creds["password"],
-		}*/
+		region, err := conf.GetRegion()
+		if err != nil {
+			return ps, errors.Wrap(errors.New("invalid exoscale provider configuration"), err.Error())
+		}
+
+		terraformConf := terraform.ProviderConfiguration{
+			"access_key": conf.APIKey,
+			"secret_key": conf.APISecret,
+
+			"endpoints": map[string]any{
+				"s3": conf.Endpoint,
+			},
+			"region": region,
+
+			"skip_credentials_validation": true,
+			"skip_region_validation":      true,
+			"skip_requesting_account_id":  true,
+		}
+
+		ps.Configuration = terraformConf
+
 		return ps, nil
 	}
 }

@@ -10,7 +10,7 @@ package cluster
 import (
 	"k8s.io/apimachinery/pkg/runtime"
 
-	v1alpha1 "github.com/exoscale/provider-exoscale-sos/apis/cluster/null/v1alpha1"
+	v1alpha1 "github.com/exoscale/provider-exoscale-sos/apis/cluster/sos/v1alpha1"
 	v1alpha1cluster "github.com/exoscale/provider-exoscale-sos/apis/cluster/v1alpha1"
 	v1beta1 "github.com/exoscale/provider-exoscale-sos/apis/cluster/v1beta1"
 )
