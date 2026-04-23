@@ -158,6 +158,56 @@ func (mg *BucketCORSConfiguration) SetWriteConnectionSecretToReference(r *xpv1.S
 	mg.Spec.WriteConnectionSecretToReference = r
 }
 
+// GetCondition of this BucketReplicationConfiguration.
+func (mg *BucketReplicationConfiguration) GetCondition(ct xpv1.ConditionType) xpv1.Condition {
+	return mg.Status.GetCondition(ct)
+}
+
+// GetDeletionPolicy of this BucketReplicationConfiguration.
+func (mg *BucketReplicationConfiguration) GetDeletionPolicy() xpv1.DeletionPolicy {
+	return mg.Spec.DeletionPolicy
+}
+
+// GetManagementPolicies of this BucketReplicationConfiguration.
+func (mg *BucketReplicationConfiguration) GetManagementPolicies() xpv1.ManagementPolicies {
+	return mg.Spec.ManagementPolicies
+}
+
+// GetProviderConfigReference of this BucketReplicationConfiguration.
+func (mg *BucketReplicationConfiguration) GetProviderConfigReference() *xpv1.Reference {
+	return mg.Spec.ProviderConfigReference
+}
+
+// GetWriteConnectionSecretToReference of this BucketReplicationConfiguration.
+func (mg *BucketReplicationConfiguration) GetWriteConnectionSecretToReference() *xpv1.SecretReference {
+	return mg.Spec.WriteConnectionSecretToReference
+}
+
+// SetConditions of this BucketReplicationConfiguration.
+func (mg *BucketReplicationConfiguration) SetConditions(c ...xpv1.Condition) {
+	mg.Status.SetConditions(c...)
+}
+
+// SetDeletionPolicy of this BucketReplicationConfiguration.
+func (mg *BucketReplicationConfiguration) SetDeletionPolicy(r xpv1.DeletionPolicy) {
+	mg.Spec.DeletionPolicy = r
+}
+
+// SetManagementPolicies of this BucketReplicationConfiguration.
+func (mg *BucketReplicationConfiguration) SetManagementPolicies(r xpv1.ManagementPolicies) {
+	mg.Spec.ManagementPolicies = r
+}
+
+// SetProviderConfigReference of this BucketReplicationConfiguration.
+func (mg *BucketReplicationConfiguration) SetProviderConfigReference(r *xpv1.Reference) {
+	mg.Spec.ProviderConfigReference = r
+}
+
+// SetWriteConnectionSecretToReference of this BucketReplicationConfiguration.
+func (mg *BucketReplicationConfiguration) SetWriteConnectionSecretToReference(r *xpv1.SecretReference) {
+	mg.Spec.WriteConnectionSecretToReference = r
+}
+
 // GetCondition of this BucketVersioning.
 func (mg *BucketVersioning) GetCondition(ct xpv1.ConditionType) xpv1.Condition {
 	return mg.Status.GetCondition(ct)

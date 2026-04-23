@@ -101,6 +101,93 @@ func (mg *BucketCORSConfiguration) ResolveReferences(ctx context.Context, c clie
 	return nil
 }
 
+// ResolveReferences of this BucketReplicationConfiguration.
+func (mg *BucketReplicationConfiguration) ResolveReferences(ctx context.Context, c client.Reader) error {
+	r := reference.NewAPIResolver(c, mg)
+
+	var rsp reference.ResolutionResponse
+	var err error
+
+	rsp, err = r.Resolve(ctx, reference.ResolutionRequest{
+		CurrentValue: reference.FromPtrValue(mg.Spec.ForProvider.Bucket),
+		Extract:      reference.ExternalName(),
+		Namespace:    mg.GetNamespace(),
+		Reference:    mg.Spec.ForProvider.BucketRef,
+		Selector:     mg.Spec.ForProvider.BucketSelector,
+		To: reference.To{
+			List:    &BucketList{},
+			Managed: &Bucket{},
+		},
+	})
+	if err != nil {
+		return errors.Wrap(err, "mg.Spec.ForProvider.Bucket")
+	}
+	mg.Spec.ForProvider.Bucket = reference.ToPtrValue(rsp.ResolvedValue)
+	mg.Spec.ForProvider.BucketRef = rsp.ResolvedReference
+
+	for i3 := 0; i3 < len(mg.Spec.ForProvider.Rule); i3++ {
+		for i4 := 0; i4 < len(mg.Spec.ForProvider.Rule[i3].Destination); i4++ {
+			rsp, err = r.Resolve(ctx, reference.ResolutionRequest{
+				CurrentValue: reference.FromPtrValue(mg.Spec.ForProvider.Rule[i3].Destination[i4].Bucket),
+				Extract:      reference.ExternalName(),
+				Namespace:    mg.GetNamespace(),
+				Reference:    mg.Spec.ForProvider.Rule[i3].Destination[i4].BucketRef,
+				Selector:     mg.Spec.ForProvider.Rule[i3].Destination[i4].BucketSelector,
+				To: reference.To{
+					List:    &BucketList{},
+					Managed: &Bucket{},
+				},
+			})
+			if err != nil {
+				return errors.Wrap(err, "mg.Spec.ForProvider.Rule[i3].Destination[i4].Bucket")
+			}
+			mg.Spec.ForProvider.Rule[i3].Destination[i4].Bucket = reference.ToPtrValue(rsp.ResolvedValue)
+			mg.Spec.ForProvider.Rule[i3].Destination[i4].BucketRef = rsp.ResolvedReference
+
+		}
+	}
+	rsp, err = r.Resolve(ctx, reference.ResolutionRequest{
+		CurrentValue: reference.FromPtrValue(mg.Spec.InitProvider.Bucket),
+		Extract:      reference.ExternalName(),
+		Namespace:    mg.GetNamespace(),
+		Reference:    mg.Spec.InitProvider.BucketRef,
+		Selector:     mg.Spec.InitProvider.BucketSelector,
+		To: reference.To{
+			List:    &BucketList{},
+			Managed: &Bucket{},
+		},
+	})
+	if err != nil {
+		return errors.Wrap(err, "mg.Spec.InitProvider.Bucket")
+	}
+	mg.Spec.InitProvider.Bucket = reference.ToPtrValue(rsp.ResolvedValue)
+	mg.Spec.InitProvider.BucketRef = rsp.ResolvedReference
+
+	for i3 := 0; i3 < len(mg.Spec.InitProvider.Rule); i3++ {
+		for i4 := 0; i4 < len(mg.Spec.InitProvider.Rule[i3].Destination); i4++ {
+			rsp, err = r.Resolve(ctx, reference.ResolutionRequest{
+				CurrentValue: reference.FromPtrValue(mg.Spec.InitProvider.Rule[i3].Destination[i4].Bucket),
+				Extract:      reference.ExternalName(),
+				Namespace:    mg.GetNamespace(),
+				Reference:    mg.Spec.InitProvider.Rule[i3].Destination[i4].BucketRef,
+				Selector:     mg.Spec.InitProvider.Rule[i3].Destination[i4].BucketSelector,
+				To: reference.To{
+					List:    &BucketList{},
+					Managed: &Bucket{},
+				},
+			})
+			if err != nil {
+				return errors.Wrap(err, "mg.Spec.InitProvider.Rule[i3].Destination[i4].Bucket")
+			}
+			mg.Spec.InitProvider.Rule[i3].Destination[i4].Bucket = reference.ToPtrValue(rsp.ResolvedValue)
+			mg.Spec.InitProvider.Rule[i3].Destination[i4].BucketRef = rsp.ResolvedReference
+
+		}
+	}
+
+	return nil
+}
+
 // ResolveReferences of this BucketVersioning.
 func (mg *BucketVersioning) ResolveReferences(ctx context.Context, c client.Reader) error {
 	r := reference.NewAPIResolver(c, mg)

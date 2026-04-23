@@ -1,0 +1,113 @@
+apiVersion: sos.sos.m.exoscale.ch/v1alpha1
+kind: BucketReplicationConfiguration
+metadata:
+  annotations:
+    meta.upbound.io/example-id: sos/v1alpha1/bucketreplicationconfiguration
+  labels:
+    testing.upbound.io/example-name: replication
+  name: replication
+  namespace: crossplane-system
+spec:
+  forProvider:
+    bucketSelector:
+      matchLabels:
+        testing.upbound.io/example-name: source
+    provider: ${aws.central}
+    role: ${aws_iam_role.replication.arn}
+    rule:
+    - destination:
+      - bucketSelector:
+          matchLabels:
+            testing.upbound.io/example-name: destination
+        storageClass: STANDARD
+      filter:
+      - prefix: example
+      id: examplerule
+      status: Enabled
+
+---
+
+apiVersion: sos.sos.m.exoscale.ch/v1alpha1
+kind: Bucket
+metadata:
+  annotations:
+    meta.upbound.io/example-id: sos/v1alpha1/bucketreplicationconfiguration
+  labels:
+    testing.upbound.io/example-name: destination
+  name: destination
+  namespace: crossplane-system
+spec:
+  forProvider: {}
+
+---
+
+apiVersion: sos.sos.m.exoscale.ch/v1alpha1
+kind: Bucket
+metadata:
+  annotations:
+    meta.upbound.io/example-id: sos/v1alpha1/bucketreplicationconfiguration
+  labels:
+    testing.upbound.io/example-name: source
+  name: source
+  namespace: crossplane-system
+spec:
+  forProvider:
+    provider: ${aws.central}
+
+---
+
+apiVersion: sos.sos.m.exoscale.ch/v1alpha1
+kind: BucketACL
+metadata:
+  annotations:
+    meta.upbound.io/example-id: sos/v1alpha1/bucketreplicationconfiguration
+  labels:
+    testing.upbound.io/example-name: source_bucket_acl
+  name: source-bucket-acl
+  namespace: crossplane-system
+spec:
+  forProvider:
+    acl: private
+    bucketSelector:
+      matchLabels:
+        testing.upbound.io/example-name: source
+    provider: ${aws.central}
+
+---
+
+apiVersion: sos.sos.m.exoscale.ch/v1alpha1
+kind: BucketVersioning
+metadata:
+  annotations:
+    meta.upbound.io/example-id: sos/v1alpha1/bucketreplicationconfiguration
+  labels:
+    testing.upbound.io/example-name: destination
+  name: destination
+  namespace: crossplane-system
+spec:
+  forProvider:
+    bucketSelector:
+      matchLabels:
+        testing.upbound.io/example-name: destination
+    versioningConfiguration:
+    - status: Enabled
+
+---
+
+apiVersion: sos.sos.m.exoscale.ch/v1alpha1
+kind: BucketVersioning
+metadata:
+  annotations:
+    meta.upbound.io/example-id: sos/v1alpha1/bucketreplicationconfiguration
+  labels:
+    testing.upbound.io/example-name: source
+  name: source
+  namespace: crossplane-system
+spec:
+  forProvider:
+    bucketSelector:
+      matchLabels:
+        testing.upbound.io/example-name: source
+    provider: ${aws.central}
+    versioningConfiguration:
+    - status: Enabled
