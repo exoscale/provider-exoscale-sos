@@ -11,6 +11,7 @@ import (
 
 	providerconfig "github.com/exoscale/provider-exoscale-sos/internal/controller/namespaced/providerconfig"
 	bucket "github.com/exoscale/provider-exoscale-sos/internal/controller/namespaced/sos/bucket"
+	bucketacl "github.com/exoscale/provider-exoscale-sos/internal/controller/namespaced/sos/bucketacl"
 	bucketversioning "github.com/exoscale/provider-exoscale-sos/internal/controller/namespaced/sos/bucketversioning"
 )
 
@@ -20,6 +21,7 @@ func Setup(mgr ctrl.Manager, o controller.Options) error {
 	for _, setup := range []func(ctrl.Manager, controller.Options) error{
 		providerconfig.Setup,
 		bucket.Setup,
+		bucketacl.Setup,
 		bucketversioning.Setup,
 	} {
 		if err := setup(mgr, o); err != nil {
@@ -35,6 +37,7 @@ func SetupGated(mgr ctrl.Manager, o controller.Options) error {
 	for _, setup := range []func(ctrl.Manager, controller.Options) error{
 		providerconfig.SetupGated,
 		bucket.SetupGated,
+		bucketacl.SetupGated,
 		bucketversioning.SetupGated,
 	} {
 		if err := setup(mgr, o); err != nil {

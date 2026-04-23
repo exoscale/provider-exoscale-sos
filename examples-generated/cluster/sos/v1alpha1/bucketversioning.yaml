@@ -26,3 +26,20 @@ metadata:
   name: example
 spec:
   forProvider: {}
+
+---
+
+apiVersion: sos.sos.exoscale.ch/v1alpha1
+kind: BucketACL
+metadata:
+  annotations:
+    meta.upbound.io/example-id: sos/v1alpha1/bucketversioning
+  labels:
+    testing.upbound.io/example-name: example
+  name: example
+spec:
+  forProvider:
+    acl: private
+    bucketSelector:
+      matchLabels:
+        testing.upbound.io/example-name: example

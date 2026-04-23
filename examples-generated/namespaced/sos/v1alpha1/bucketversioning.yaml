@@ -28,3 +28,21 @@ metadata:
   namespace: crossplane-system
 spec:
   forProvider: {}
+
+---
+
+apiVersion: sos.sos.m.exoscale.ch/v1alpha1
+kind: BucketACL
+metadata:
+  annotations:
+    meta.upbound.io/example-id: sos/v1alpha1/bucketversioning
+  labels:
+    testing.upbound.io/example-name: example
+  name: example
+  namespace: crossplane-system
+spec:
+  forProvider:
+    acl: private
+    bucketSelector:
+      matchLabels:
+        testing.upbound.io/example-name: example

@@ -10,4 +10,7 @@ package v1alpha1
 func (tr *Bucket) Hub() {}
 
 // Hub marks this type as a conversion hub.
+func (tr *BucketACL) Hub() {}
+
+// Hub marks this type as a conversion hub.
 func (tr *BucketVersioning) Hub() {}

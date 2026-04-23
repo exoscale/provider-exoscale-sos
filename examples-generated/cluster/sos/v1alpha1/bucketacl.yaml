@@ -1,0 +1,27 @@
+apiVersion: sos.sos.exoscale.ch/v1alpha1
+kind: BucketACL
+metadata:
+  annotations:
+    meta.upbound.io/example-id: sos/v1alpha1/bucketacl
+  labels:
+    testing.upbound.io/example-name: example
+  name: example
+spec:
+  forProvider:
+    acl: private
+    bucketSelector:
+      matchLabels:
+        testing.upbound.io/example-name: example
+
+---
+
+apiVersion: sos.sos.exoscale.ch/v1alpha1
+kind: Bucket
+metadata:
+  annotations:
+    meta.upbound.io/example-id: sos/v1alpha1/bucketacl
+  labels:
+    testing.upbound.io/example-name: example
+  name: example
+spec:
+  forProvider: {}
