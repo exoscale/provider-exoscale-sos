@@ -1,0 +1,30 @@
+apiVersion: sos.sos.m.exoscale.ch/v1alpha1
+kind: BucketVersioning
+metadata:
+  annotations:
+    meta.upbound.io/example-id: sos/v1alpha1/bucketversioning
+  labels:
+    testing.upbound.io/example-name: versioning_example
+  name: versioning-example
+  namespace: crossplane-system
+spec:
+  forProvider:
+    bucketSelector:
+      matchLabels:
+        testing.upbound.io/example-name: example
+    versioningConfiguration:
+    - status: Enabled
+
+---
+
+apiVersion: sos.sos.m.exoscale.ch/v1alpha1
+kind: Bucket
+metadata:
+  annotations:
+    meta.upbound.io/example-id: sos/v1alpha1/bucketversioning
+  labels:
+    testing.upbound.io/example-name: example
+  name: example
+  namespace: crossplane-system
+spec:
+  forProvider: {}

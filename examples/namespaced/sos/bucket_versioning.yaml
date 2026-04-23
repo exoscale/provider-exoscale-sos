@@ -1,0 +1,21 @@
+apiVersion: sos.sos.m.exoscale.ch/v1alpha1
+kind: BucketVersioning
+metadata:
+  name: versioning-example
+spec:
+  forProvider:
+    bucketRef:
+      name: my-bucket-123456
+      namespace: crossplane-system
+    versioningConfiguration:
+      - status: Enabled
+
+---
+
+apiVersion: sos.sos.m.exoscale.ch/v1alpha1
+kind: Bucket
+metadata:
+  name: my-bucket-123456
+  namespace: crossplane-system
+spec:
+  forProvider: {}

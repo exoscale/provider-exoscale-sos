@@ -11,6 +11,7 @@ import (
 
 	providerconfig "github.com/exoscale/provider-exoscale-sos/internal/controller/namespaced/providerconfig"
 	bucket "github.com/exoscale/provider-exoscale-sos/internal/controller/namespaced/sos/bucket"
+	bucketversioning "github.com/exoscale/provider-exoscale-sos/internal/controller/namespaced/sos/bucketversioning"
 )
 
 // Setup creates all controllers with the supplied logger and adds them to
@@ -19,6 +20,7 @@ func Setup(mgr ctrl.Manager, o controller.Options) error {
 	for _, setup := range []func(ctrl.Manager, controller.Options) error{
 		providerconfig.Setup,
 		bucket.Setup,
+		bucketversioning.Setup,
 	} {
 		if err := setup(mgr, o); err != nil {
 			return err
@@ -33,6 +35,7 @@ func SetupGated(mgr ctrl.Manager, o controller.Options) error {
 	for _, setup := range []func(ctrl.Manager, controller.Options) error{
 		providerconfig.SetupGated,
 		bucket.SetupGated,
+		bucketversioning.SetupGated,
 	} {
 		if err := setup(mgr, o); err != nil {
 			return err
