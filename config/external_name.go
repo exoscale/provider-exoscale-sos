@@ -7,9 +7,10 @@ import (
 // ExternalNameConfigs contains all external name configurations for this
 // provider.
 var ExternalNameConfigs = map[string]config.ExternalName{
-	"aws_s3_bucket":            config.ParameterAsIdentifier("bucket"),
-	"aws_s3_bucket_versioning": config.IdentifierFromProvider,
-	"aws_s3_bucket_acl":        config.IdentifierFromProvider,
+	"aws_s3_bucket":                    config.ParameterAsIdentifier("bucket"),
+	"aws_s3_bucket_versioning":         config.IdentifierFromProvider,
+	"aws_s3_bucket_acl":                config.IdentifierFromProvider,
+	"aws_s3_bucket_cors_configuration": config.IdentifierFromProvider,
 }
 
 func idWithStub() config.ExternalName {

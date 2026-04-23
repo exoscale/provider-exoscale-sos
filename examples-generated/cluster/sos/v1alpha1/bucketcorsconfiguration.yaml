@@ -1,0 +1,41 @@
+apiVersion: sos.sos.exoscale.ch/v1alpha1
+kind: BucketCORSConfiguration
+metadata:
+  annotations:
+    meta.upbound.io/example-id: sos/v1alpha1/bucketcorsconfiguration
+  labels:
+    testing.upbound.io/example-name: example
+  name: example
+spec:
+  forProvider:
+    bucketSelector:
+      matchLabels:
+        testing.upbound.io/example-name: example
+    corsRule:
+    - allowedHeaders:
+      - '*'
+      allowedMethods:
+      - PUT
+      - POST
+      allowedOrigins:
+      - https://s3-website-test.hashicorp.com
+      exposeHeaders:
+      - ETag
+      maxAgeSeconds: 3000
+    - allowedMethods:
+      - GET
+      allowedOrigins:
+      - '*'
+
+---
+
+apiVersion: sos.sos.exoscale.ch/v1alpha1
+kind: Bucket
+metadata:
+  annotations:
+    meta.upbound.io/example-id: sos/v1alpha1/bucketcorsconfiguration
+  labels:
+    testing.upbound.io/example-name: example
+  name: example
+spec:
+  forProvider: {}

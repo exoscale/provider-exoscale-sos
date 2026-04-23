@@ -13,4 +13,7 @@ func (tr *Bucket) Hub() {}
 func (tr *BucketACL) Hub() {}
 
 // Hub marks this type as a conversion hub.
+func (tr *BucketCORSConfiguration) Hub() {}
+
+// Hub marks this type as a conversion hub.
 func (tr *BucketVersioning) Hub() {}

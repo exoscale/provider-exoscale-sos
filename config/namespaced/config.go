@@ -30,4 +30,12 @@ func Configure(p *config.Provider) {
 			Type: "github.com/exoscale/provider-exoscale-sos/apis/namespaced/sos/v1alpha1.Bucket",
 		}
 	})
+	p.AddResourceConfigurator("aws_s3_bucket_cors_configuration", func(r *config.Resource) {
+		r.Kind = "BucketCORSConfiguration"
+		r.ShortGroup = shortGroup
+
+		r.References["bucket"] = config.Reference{
+			Type: "github.com/exoscale/provider-exoscale-sos/apis/namespaced/sos/v1alpha1.Bucket",
+		}
+	})
 }
