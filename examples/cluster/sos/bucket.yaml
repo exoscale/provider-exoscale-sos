@@ -1,7 +1,0 @@
-apiVersion: sos.sos.exoscale.ch/v1alpha1
-kind: Bucket
-metadata:
-  name: my-bucket
-spec:
-  forProvider:
-    objectLockEnabled: false

@@ -1,8 +1,0 @@
-apiVersion: sos.sos.m.exoscale.ch/v1alpha1
-kind: Bucket
-metadata:
-  name: my-bucket-123456
-  namespace: crossplane-system
-spec:
-  forProvider:
-    objectLockEnabled: false
