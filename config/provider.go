@@ -6,13 +6,13 @@ import (
 
 	ujconfig "github.com/crossplane/upjet/v2/pkg/config"
 
-	nullCluster "github.com/crossplane/upjet-provider-template/config/cluster/null"
-	nullNamespaced "github.com/crossplane/upjet-provider-template/config/namespaced/null"
+	cluster "github.com/exoscale/provider-exoscale-sos/config/cluster"
+	namespaced "github.com/exoscale/provider-exoscale-sos/config/namespaced"
 )
 
 const (
-	resourcePrefix = "template"
-	modulePath     = "github.com/crossplane/upjet-provider-template"
+	resourcePrefix = "sos"
+	modulePath     = "github.com/exoscale/provider-exoscale-sos"
 )
 
 //go:embed schema.json
@@ -24,7 +24,7 @@ var providerMetadata string
 // GetProvider returns provider configuration
 func GetProvider() *ujconfig.Provider {
 	pc := ujconfig.NewProvider([]byte(providerSchema), resourcePrefix, modulePath, []byte(providerMetadata),
-		ujconfig.WithRootGroup("template.crossplane.io"),
+		ujconfig.WithRootGroup("sos.exoscale.ch"),
 		ujconfig.WithIncludeList(ExternalNameConfigured()),
 		ujconfig.WithFeaturesPackage("internal/features"),
 		ujconfig.WithDefaultResourceOptions(
@@ -33,7 +33,7 @@ func GetProvider() *ujconfig.Provider {
 
 	for _, configure := range []func(provider *ujconfig.Provider){
 		// add custom config functions
-		nullCluster.Configure,
+		cluster.Configure,
 	} {
 		configure(pc)
 	}
@@ -45,7 +45,7 @@ func GetProvider() *ujconfig.Provider {
 // GetProviderNamespaced returns the namespaced provider configuration
 func GetProviderNamespaced() *ujconfig.Provider {
 	pc := ujconfig.NewProvider([]byte(providerSchema), resourcePrefix, modulePath, []byte(providerMetadata),
-		ujconfig.WithRootGroup("template.m.crossplane.io"),
+		ujconfig.WithRootGroup("sos.m.exoscale.ch"),
 		ujconfig.WithIncludeList(ExternalNameConfigured()),
 		ujconfig.WithFeaturesPackage("internal/features"),
 		ujconfig.WithDefaultResourceOptions(
@@ -57,7 +57,7 @@ func GetProviderNamespaced() *ujconfig.Provider {
 
 	for _, configure := range []func(provider *ujconfig.Provider){
 		// add custom config functions
-		nullNamespaced.Configure,
+		namespaced.Configure,
 	} {
 		configure(pc)
 	}

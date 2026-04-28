@@ -7,7 +7,7 @@ import (
 
 // Package type metadata.
 const (
-	Group   = "template.crossplane.io"
+	Group   = "sos.exoscale.ch"
 	Version = "v1alpha1"
 )
 

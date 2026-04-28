@@ -9,16 +9,24 @@ import (
 
 	"github.com/crossplane/upjet/v2/pkg/controller"
 
-	resource "github.com/crossplane/upjet-provider-template/internal/controller/namespaced/null/resource"
-	providerconfig "github.com/crossplane/upjet-provider-template/internal/controller/namespaced/providerconfig"
+	providerconfig "github.com/exoscale/provider-exoscale-sos/internal/controller/namespaced/providerconfig"
+	bucket "github.com/exoscale/provider-exoscale-sos/internal/controller/namespaced/sos/bucket"
+	bucketacl "github.com/exoscale/provider-exoscale-sos/internal/controller/namespaced/sos/bucketacl"
+	bucketcorsconfiguration "github.com/exoscale/provider-exoscale-sos/internal/controller/namespaced/sos/bucketcorsconfiguration"
+	bucketreplicationconfiguration "github.com/exoscale/provider-exoscale-sos/internal/controller/namespaced/sos/bucketreplicationconfiguration"
+	bucketversioning "github.com/exoscale/provider-exoscale-sos/internal/controller/namespaced/sos/bucketversioning"
 )
 
 // Setup creates all controllers with the supplied logger and adds them to
 // the supplied manager.
 func Setup(mgr ctrl.Manager, o controller.Options) error {
 	for _, setup := range []func(ctrl.Manager, controller.Options) error{
-		resource.Setup,
 		providerconfig.Setup,
+		bucket.Setup,
+		bucketacl.Setup,
+		bucketcorsconfiguration.Setup,
+		bucketreplicationconfiguration.Setup,
+		bucketversioning.Setup,
 	} {
 		if err := setup(mgr, o); err != nil {
 			return err
@@ -31,8 +39,12 @@ func Setup(mgr ctrl.Manager, o controller.Options) error {
 // the supplied manager gated.
 func SetupGated(mgr ctrl.Manager, o controller.Options) error {
 	for _, setup := range []func(ctrl.Manager, controller.Options) error{
-		resource.SetupGated,
 		providerconfig.SetupGated,
+		bucket.SetupGated,
+		bucketacl.SetupGated,
+		bucketcorsconfiguration.SetupGated,
+		bucketreplicationconfiguration.SetupGated,
+		bucketversioning.SetupGated,
 	} {
 		if err := setup(mgr, o); err != nil {
 			return err
