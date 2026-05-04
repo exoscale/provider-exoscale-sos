@@ -1,0 +1,8 @@
+apiVersion: sos.sos.m.exoscale.ch/v1alpha1
+kind: Bucket
+metadata:
+  name: crossplane-bucket-${data.suffix}
+  namespace: default
+spec:
+  forProvider:
+    objectLockEnabled: false

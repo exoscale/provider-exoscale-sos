@@ -274,6 +274,24 @@ $> exo storage list sos://$DESTINATION
 
 ```
 
+## End to End test
+```bash
+$> export EXOSCALE_API_KEY=<your-api-key>
+$> export EXOSCALE_API_SECRET=<your-api-secret>
+$> export EXOSCALE_SOS_ENDPOINT=<sos-endpoint>
+
+$> mkdir -p .work
+$> cat > .work/uptest_datasource.yaml << EOF
+suffix: local
+EOF
+
+$> make e2e \
+   PROVIDER_NAME=provider-exoscale-sos \
+   UPTEST_EXAMPLE_LIST=$(find cluster/test/*/*.yaml | tr '\n' ',') \
+   UPTEST_CLOUD_CREDENTIALS="{\"key\": \"$EXOSCALE_API_KEY\", \"secret\": \"$EXOSCALE_API_SECRET\", \"endpoint\": \"$EXOSCALE_SOS_ENDPOINT\"}" \
+   UPTEST_DATASOURCE_PATH=./.work/uptest_datasource.yaml
+```
+
 ## Report a Bug
 
 For filing bugs, suggesting improvements, or requesting new features, please

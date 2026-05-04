@@ -1,0 +1,11 @@
+apiVersion: sos.sos.m.exoscale.ch/v1alpha1
+kind: BucketACL
+metadata:
+  name: crossplane-bucket-${data.suffix}
+  namespace: default
+spec:
+  forProvider:
+    acl: private
+    bucketRef:
+      name: crossplane-bucket-${data.suffix}
+      namespace: default
