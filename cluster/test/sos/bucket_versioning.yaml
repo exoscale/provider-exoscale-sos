@@ -1,0 +1,12 @@
+apiVersion: sos.sos.m.exoscale.ch/v1alpha1
+kind: BucketVersioning
+metadata:
+  name: crossplane-bucket-${data.suffix}
+  namespace: default
+spec:
+  forProvider:
+    bucketRef:
+      name: crossplane-bucket-${data.suffix}
+      namespace: default
+    versioningConfiguration:
+      - status: Enabled

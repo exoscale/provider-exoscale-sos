@@ -29,6 +29,10 @@ func Configure(p *config.Provider) {
 		r.References["bucket"] = config.Reference{
 			Type: "github.com/exoscale/provider-exoscale-sos/apis/namespaced/sos/v1alpha1.Bucket",
 		}
+
+		r.LateInitializer = config.LateInitializer{
+			IgnoredFields: []string{"acl", "access_control_policy"},
+		}
 	})
 	p.AddResourceConfigurator("aws_s3_bucket_cors_configuration", func(r *config.Resource) {
 		r.Kind = "BucketCORSConfiguration"
