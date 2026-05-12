@@ -1,42 +1,47 @@
-# Provider SOS
+# Provider Exoscale SOS
 
 `provider-exoscale-sos` is a [Crossplane](https://crossplane.io/) provider
-sos that is built using [Upjet](https://github.com/crossplane/upjet) code
-generation tools and exposes XRM-conformant managed resources for the SOS
-API.
+built using [Upjet](https://github.com/crossplane/upjet) code generation tools.
+It exposes XRM-conformant managed resources for the
+[Exoscale SOS (Simple Object Storage)](https://www.exoscale.com/object-storage/)
+API, enabling you to manage S3-compatible object storage declaratively from
+Kubernetes.
+
+> **Note:** This provider is generated from the [AWS S3 Terraform provider](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/s3_bucket).
+> Exoscale SOS implements the S3-compatible API, so most common operations work
+> seamlessly. A small number of AWS-specific features (such as certain IAM ARN
+> formats or AWS-proprietary storage classes) are not available on Exoscale SOS —
+> the relevant resources or fields are clearly noted where applicable.
+
+This provider is designed to be installed **alongside
+[provider-exoscale](https://github.com/exoscale/provider-exoscale)**, which
+manages IAM roles and other Exoscale resources needed for advanced SOS
+configurations such as cross-zone replication.
+
+## Supported Resources
+
+| Resource | Description |
+|----------|-------------|
+| **Bucket** | Create and manage SOS buckets |
+| **BucketACL** | Manage bucket access control lists |
+| **BucketCORSConfiguration** | Configure cross-origin resource sharing rules |
+| **BucketVersioning** | Enable or suspend object versioning |
+| **BucketReplicationConfiguration** | Set up cross-zone bucket replication |
+
+Ready-to-use example manifests for all supported resources are available in the
+[`examples-generated/`](examples-generated/) directory.
 
 ## Getting Started
 
-This sos serves as a starting point for generating a new [Crossplane Provider](https://docs.crossplane.io/latest/packages/providers/) using the [`upjet`](https://github.com/crossplane/upjet) tooling. Please follow the guide linked below to generate a new Provider:
+### Prerequisites
 
-https://github.com/crossplane/upjet/blob/main/docs/generating-a-provider.md
-
-## Developing
-
-Run code-generation pipeline:
-```console
-go run cmd/generator/main.go "$PWD"
-```
-
-Run against a Kubernetes cluster:
-
-```console
-make run
-```
-
-Build, push, and install:
-
-```console
-make all
-```
-
-Build binary:
-
-```console
-make build
-```
+- An existing Kubernetes cluster
+- [kubectl](https://kubernetes.io/docs/tasks/tools/#kubectl) installed and configured
+- [Helm](https://helm.sh/docs/intro/install/) installed
+- An [Exoscale](https://portal.exoscale.com/register) account with API credentials
 
 ## Example
+
 ### Install Crossplane
 
 ```bash
@@ -54,8 +59,10 @@ $> kubectl wait deployment crossplane \
 ```
 
 ### Install exoscale provider
-```Bash
+
+```bash
 export PROVIDER_EXOSCALE_VERSION=v0.1.0
+
 $> cat <<EOF | kubectl apply -f -
 apiVersion: pkg.crossplane.io/v1
 kind: Provider
@@ -69,12 +76,31 @@ $> kubectl wait provider/provider-exoscale \
    --for=condition=Healthy \
    --timeout=120s
 ```
+
 ### Install exoscale provider sos
-TODO
+
+```bash
+export PROVIDER_EXOSCALE_SOS_VERSION=v0.1.0
+
+$> cat <<EOF | kubectl apply -f -
+apiVersion: pkg.crossplane.io/v1
+kind: Provider
+metadata:
+  name: provider-exoscale-sos
+spec:
+  package: xpkg.upbound.io/exoscale/provider-exoscale-sos:$PROVIDER_EXOSCALE_SOS_VERSION
+EOF
+
+$> kubectl wait provider/provider-exoscale-sos \
+   --for=condition=Healthy \
+   --timeout=120s
+```
 
 ### Configure crossplane providers
 
-```Bash
+Exoscale SOS is **endpoint-specific**: each zone exposes its own S3-compatible endpoint. Create one `ClusterProviderConfig` per zone, each referencing a secret that embeds the zone's endpoint URL.
+
+```bash
 $> export EXOSCALE_API_KEY=<your-api-key>
 $> export EXOSCALE_API_SECRET=<your-api-secret>
 
@@ -134,7 +160,10 @@ EOF
 ```
 
 ### Simple Leader-Follower Setup
-```Bash
+
+The following sets up cross-zone replication from a source bucket in `ch-gva-2` to a destination bucket in `at-vie-1`. This example uses `provider-exoscale` to create the IAM role that authorizes the replication operation.
+
+```bash
 export SOURCE=bucket-src-$(date +%N)
 export DESTINATION=bucket-dest-$(date +%N)
 
@@ -271,14 +300,40 @@ EOF
 
 $> exo storage upload -r ./ sos://$SOURCE/
 $> exo storage list sos://$DESTINATION
-
 ```
 
-## End to End test
+## Developing
+
+> Based on the [Upjet documentation](https://github.com/crossplane/upjet/tree/main/docs).
+
+Run the code-generation pipeline:
+
+```bash
+$> make generate
+```
+
+Run the provider locally against an existing Kubernetes cluster:
+
+```bash
+$> make run
+```
+
+Check deployed resources:
+
+```bash
+$> watch kubectl get managed -A
+```
+
+### Updating Examples and Tests
+
+When making changes to resource definitions in the `apis/` directory, make sure to review and update the end-to-end test manifests in [`cluster/test/`](cluster/test/) to cover the changes.
+
+## End-to-End Tests
+
 ```bash
 $> export EXOSCALE_API_KEY=<your-api-key>
 $> export EXOSCALE_API_SECRET=<your-api-secret>
-$> export EXOSCALE_SOS_ENDPOINT=<sos-endpoint>
+$> export EXOSCALE_SOS_ENDPOINT=<sos-endpoint>  # e.g. https://sos-ch-gva-2.exo.io
 
 $> mkdir -p .work
 $> cat > .work/uptest_datasource.yaml << EOF
@@ -294,5 +349,4 @@ $> make e2e \
 
 ## Report a Bug
 
-For filing bugs, suggesting improvements, or requesting new features, please
-open an [issue](https://github.com/exoscale/provider-exoscale-sos/issues).
+For filing bugs, suggesting improvements, or requesting new features, please open an [issue](https://github.com/exoscale/provider-exoscale-sos/issues).
